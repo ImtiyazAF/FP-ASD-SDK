@@ -34,7 +34,13 @@ public class GameBoardPanel extends JPanel {
             CellInputListener listener = new CellInputListener();
 
         // [TODO 4] Adds this common listener to all editable cells
-        // .........
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                    if (cells[row][col].isEditable()) {
+                        cells[row][col].addActionListener(listener);   // For all editable rows and cols
+                    }
+                }
+            }
 
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
     }
@@ -88,18 +94,20 @@ public class GameBoardPanel extends JPanel {
              * Update the cell status sourceCell.status,
              * and re-paint the cell via sourceCell.paint().
              */
-            //if (numberIn == sourceCell.number) {
-            //   sourceCell.status = CellStatus.CORRECT_GUESS;
-            //} else {
-            //   ......
-            //}
-            //sourceCell.paint();   // re-paint this cell based on its status
+            if (numberIn == sourceCell.number) {
+               sourceCell.status = CellStatus.CORRECT_GUESS;
+            } else {
+               sourceCell.status = CellStatus.WRONG_GUESS;
+            }
+            sourceCell.paint();   // re-paint this cell based on its status
 
             /*
              * [TODO 6] (later)
              * Check if the player has solved the puzzle after this move,
              *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
              */
+            boolean win = isSolved();
+            if (win == true) JOptionPane.showMessageDialog(null, "Congratulation!");
         }
     }
 
