@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FP-ASD-SDK.iml" filepath="$PROJECT_DIR$/FP-ASD-SDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SudokuFP.iml" filepath="$PROJECT_DIR$/SudokuFP.iml" />
     </modules>
   </component>
 </project>
