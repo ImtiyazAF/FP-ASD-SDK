@@ -53,7 +53,7 @@ public class GameBoardPanel extends JPanel {
      */
     public void newGame() {
         // Generate a new puzzle
-        puzzle.newPuzzle(2);
+        puzzle.newPuzzle(2);  // 2 can be changed to control the difficulty level
 
         // Initialize all the 9x9 cells, based on the puzzle.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
@@ -62,6 +62,7 @@ public class GameBoardPanel extends JPanel {
             }
         }
     }
+
 
     /**
      * Return true if the puzzle is solved

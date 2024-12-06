@@ -158,7 +158,7 @@ public class SudokuMain extends JFrame {
                 }
             }
 
-            if(e.getSource()== resetGame){
+            if(e.getSource()== newGame){
                 board.newGame();
             }
 
