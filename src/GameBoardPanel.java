@@ -121,7 +121,7 @@ public class GameBoardPanel extends JPanel {
         }
 
         private void handleTextChange() {
-            if (sourceCell.status != CellStatus.TO_GUESS || sourceCell.status != CellStatus.WRONG_GUESS) {
+            if (sourceCell.status != CellStatus.TO_GUESS && sourceCell.status != CellStatus.WRONG_GUESS && sourceCell.status != sudoku.CellStatus.CORRECT_GUESS) {
                 return; // Ignore changes in cells that are not TO_GUESS
             }
             // Retrieve the current text from the Cell (inherited from JTextField)
