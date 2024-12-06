@@ -14,6 +14,7 @@ public class SudokuMain extends JFrame {
     public static JMenuItem offSound, newGame, resetGame, exit;
     private CardLayout page;
     private JButton start, btnHint;
+    private JLabel name;
 
     private JTextField nama;
     JComboBox diff;
@@ -96,18 +97,20 @@ public class SudokuMain extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         JPanel menubar = new JPanel(new GridLayout());
         JPanel gameboard = new JPanel();
-        JPanel playerBar = new JPanel(new GridLayout(4,1));
+        JPanel playerBar = new JPanel(new GridLayout(5,1));
         JPanel foot = new JPanel();
 
         JLabel l1 = new JLabel("Player Name");
         JLabel l2 = new JLabel("Score");
         JLabel l3 = new JLabel("Progres Bar");
         JLabel l4 = new JLabel("Timer");
+        name = new JLabel();
 
         l1.setHorizontalAlignment(SwingConstants.CENTER);
         l2.setHorizontalAlignment(SwingConstants.CENTER);
         l3.setHorizontalAlignment(SwingConstants.CENTER);
         l4.setHorizontalAlignment(SwingConstants.CENTER);
+        name.setHorizontalAlignment(SwingConstants.CENTER);
 
         board = new GameBoardPanel();
         menuB = new JMenuBar();
@@ -132,6 +135,7 @@ public class SudokuMain extends JFrame {
         menubar.add(menuB);
         foot.add(btnHint);
         playerBar.add(l1);
+        playerBar.add(name);
         playerBar.add(l2);
         playerBar.add(l3);
         playerBar.add(l4);
@@ -152,6 +156,8 @@ public class SudokuMain extends JFrame {
             if (e.getSource() == start) {
                 page.show(mainmenu, "gameMenu");
                 board.newGame(diff.getSelectedIndex());
+                name.setText(nama.getText());
+
             }
             if (e.getSource() == btnHint) {
                 String input = JOptionPane.showInputDialog("Enter cell (row,col) for hint (1-9,1-9):");
