@@ -163,7 +163,7 @@ public class SudokuMain extends JFrame {
             }
 
             if(e.getSource()== resetGame){
-                board.newGame(diff.getSelectedIndex());
+                board.resetGameBoard();
             }
 
             if(e.getSource()==exit){

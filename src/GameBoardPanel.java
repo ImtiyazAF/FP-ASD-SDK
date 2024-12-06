@@ -149,4 +149,14 @@ public class GameBoardPanel extends JPanel {
         return true;
     }
 
+    public void resetGameBoard() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (!puzzle.isGiven[row][col]) {
+                    cells[row][col].clear();
+                }
+            }
+        }
+    }
+
 }
