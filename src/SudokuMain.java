@@ -1,3 +1,12 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #1
+ * 1 - 5026231136 - Maulana Muhammad Ad-Dzikri
+ * 2 - 5026231172 - Mochamad Zhulmi Danovanz H
+ * 3 - 5026231197- Imtiyaz Shafhal Afif
+ * */
 package sudoku;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,6 +27,14 @@ public class SudokuMain extends JFrame {
 
     private JTextField nama;
     JComboBox diff;
+
+    private Timer gameTimer;
+    private JProgressBar progressBar;
+    private JLabel timerLabel;
+    private JLabel scoreLabel;
+
+    private int elapsedTime = 0;
+    private int score = 100;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -97,8 +114,12 @@ public class SudokuMain extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         JPanel menubar = new JPanel(new GridLayout());
         JPanel gameboard = new JPanel();
-        JPanel playerBar = new JPanel(new GridLayout(5,1));
+        JPanel playerBar = new JPanel(new GridLayout(8,1));
         JPanel foot = new JPanel();
+
+        timerLabel = new JLabel("Time: 0 sec");
+        scoreLabel = new JLabel("Score: 100");
+        progressBar = new JProgressBar();
 
         JLabel l1 = new JLabel("Player Name");
         JLabel l2 = new JLabel("Score");
@@ -111,6 +132,8 @@ public class SudokuMain extends JFrame {
         l3.setHorizontalAlignment(SwingConstants.CENTER);
         l4.setHorizontalAlignment(SwingConstants.CENTER);
         name.setHorizontalAlignment(SwingConstants.CENTER);
+        timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         board = new GameBoardPanel();
         menuB = new JMenuBar();
@@ -137,14 +160,16 @@ public class SudokuMain extends JFrame {
         playerBar.add(l1);
         playerBar.add(name);
         playerBar.add(l2);
+        playerBar.add(scoreLabel);
         playerBar.add(l3);
+        playerBar.add(progressBar);
         playerBar.add(l4);
+        playerBar.add(timerLabel);
 
         panel.add(menubar, BorderLayout.NORTH);
         panel.add(board, BorderLayout.CENTER);
         panel.add(playerBar, BorderLayout.WEST);
         panel.add(foot, BorderLayout.SOUTH);
-
 
 
         return panel;
@@ -157,6 +182,12 @@ public class SudokuMain extends JFrame {
                 page.show(mainmenu, "gameMenu");
                 board.newGame(diff.getSelectedIndex());
                 name.setText(nama.getText());
+                elapsedTime = 0;
+                score = 100;
+                updateUIComponents();
+
+
+                startGameTimer();
 
             }
             if (e.getSource() == btnHint) {
@@ -185,6 +216,43 @@ public class SudokuMain extends JFrame {
             }
         }
     }
+
+    private void updateUIComponents() {
+        progressBar.setValue(board.getProgress());
+        scoreLabel.setText("Score: " + score);
+    }
+
+
+
+    public void calculateScore(boolean correctGuess) {
+        if (elapsedTime < 30) {
+            score = 100;
+        } else if (elapsedTime < 60) {
+            score = 95;
+        } else if (elapsedTime < 90) {
+            score = 90;
+        } else if (elapsedTime < 120) {
+            score = 85;
+        } else if (elapsedTime < 300) {
+            score = 55 + (5 * (5 - (elapsedTime / 60)));
+        } else {
+            score = 40;
+        }
+
+        if (!correctGuess) {
+            score -= 2.5;
+        }
+        updateUIComponents();
+    }
+
+    private void startGameTimer() {
+        gameTimer = new Timer(1000, e -> {
+            elapsedTime++;
+            timerLabel.setText("Time: " + elapsedTime + " sec");
+        });
+        gameTimer.start();  // Mulai timer
+    }
+
 
 
     /** The entry main() entry method */

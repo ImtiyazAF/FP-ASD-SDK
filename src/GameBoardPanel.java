@@ -1,3 +1,12 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #1
+ * 1 - 5026231136 - Maulana Muhammad Ad-Dzikri
+ * 2 - 5026231172 - Mochamad Zhulmi Danovanz H
+ * 3 - 5026231197- Imtiyaz Shafhal Afif
+ */
 package sudoku;
 import java.awt.*;
 import java.awt.event.*;
@@ -166,6 +175,18 @@ public class GameBoardPanel extends JPanel {
 
 
         }
+    }
+
+    public int getProgress() {
+        int filledCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                    filledCells++;
+                }
+            }
+        }
+        return (filledCells * 100) / (SudokuConstants.GRID_SIZE * SudokuConstants.GRID_SIZE);
     }
 
 
