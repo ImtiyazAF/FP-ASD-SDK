@@ -162,6 +162,10 @@ public class SudokuMain extends JFrame {
                 page.show(mainmenu, "mainMenu");
             }
 
+            if(e.getSource()== resetGame){
+                board.newGame(diff.getSelectedIndex());
+            }
+
             if(e.getSource()==exit){
                 System.exit(0);
             }
