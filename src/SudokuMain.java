@@ -12,7 +12,7 @@ public class SudokuMain extends JFrame {
     public static JMenu menu;
     public static JMenuItem m1, m2, m3;
     private CardLayout page;
-    private JButton start, newGame;
+    private JButton start, btnNewGame, btnHint;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -20,9 +20,6 @@ public class SudokuMain extends JFrame {
     CellInputListener listener = new CellInputListener();
 
     JPanel mainmenu;
-
-    JButton btnNewGame = new JButton("New Game");
-    private JButton btnHint = new JButton("Get Hint");
 
     public SudokuMain() {
         page = new CardLayout();
@@ -40,27 +37,7 @@ public class SudokuMain extends JFrame {
 
         // Add a button to the south to re-start the game via board.newGame()
         // ......
-        JPanel controlPanel = new JPanel();
-        controlPanel.add(btnHint);
-        controlPanel.add(btnNewGame);
-        cp.add(controlPanel, BorderLayout.SOUTH);
         // Initialize the game board to start the game
-
-
-        btnHint.addActionListener(e -> {
-            String input = JOptionPane.showInputDialog(this, "Enter cell (row,col) for hint (1-9,1-9):");
-            if (input != null && input.matches("\\d,\\d")) {
-                String[] parts = input.split(",");
-                int row = Integer.parseInt(parts[0]) - 1;
-                int col = Integer.parseInt(parts[1]) - 1;
-
-                if (!board.provideHint(row, col)) {
-                    JOptionPane.showMessageDialog(this, "Hint could not be applied!");
-                }
-            }
-        });
-
-        btnNewGame.addActionListener(e -> board.newGame());
 
         pack();     // Pack the UI components, instead of using setSize()
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // to handle window-closing
@@ -103,12 +80,18 @@ public class SudokuMain extends JFrame {
 
         menubar.add(menuB);
 
-        newGame = new JButton("Start Again");
-        newGame.addActionListener(listener);
+        JPanel controlPanel = new JPanel();
+        btnNewGame = new JButton("New Game");
+        btnHint = new JButton("Get Hint");
+        controlPanel.add(btnHint);
+        controlPanel.add(btnNewGame);
+        btnHint.addActionListener(listener);
+        btnNewGame.addActionListener(listener);
 
         panel.add(menubar, BorderLayout.NORTH);
         panel.add(board, BorderLayout.CENTER);
-        panel.add(newGame, BorderLayout.SOUTH);
+        panel.add(controlPanel, BorderLayout.SOUTH);
+
 
         board.newGame();
 
@@ -120,11 +103,24 @@ public class SudokuMain extends JFrame {
     private class CellInputListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource()== start) {
+            if (e.getSource() == start) {
                 page.show(mainmenu, "gameMenu");
 
             }
-            if(e.getSource()== newGame) {
+            if (e.getSource() == btnHint) {
+                String input = JOptionPane.showInputDialog("Enter cell (row,col) for hint (1-9,1-9):");
+                if (input != null && input.matches("\\d,\\d")) {
+                    String[] parts = input.split(",");
+                    int row = Integer.parseInt(parts[0]) - 1;
+                    int col = Integer.parseInt(parts[1]) - 1;
+
+                    if (!board.provideHint(row, col)) {
+                        JOptionPane.showMessageDialog(SudokuMain.this, "Hint could not be applied!");
+                    }
+                }
+            }
+
+            if(e.getSource()== btnNewGame){
                 board.newGame();
             }
         }
