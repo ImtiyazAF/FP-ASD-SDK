@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
+    private int hintsUsed = 0;  // Jumlah hint yang telah digunakan
+    private static final int MAX_HINTS = 3;  // Batas maksimum hint
 
     // Define named constants for UI sizes
     public static final int CELL_SIZE = 60;   // Cell width/height in pixels
@@ -109,6 +111,34 @@ public class GameBoardPanel extends JPanel {
             boolean win = isSolved();
             if (win == true) JOptionPane.showMessageDialog(null, "Congratulation!");
         }
+    }
+
+    //HINTS
+    public boolean provideHint(int row, int col) {
+        if (hintsUsed >= MAX_HINTS) {
+            JOptionPane.showMessageDialog(null, "Maximum hints used!");
+            return false; // Max hints reached
+        }
+
+        if (row < 0 || row >= SudokuConstants.GRID_SIZE || col < 0 || col >= SudokuConstants.GRID_SIZE) {
+            JOptionPane.showMessageDialog(null, "Invalid cell coordinates!");
+            return false;
+        }
+
+        if (puzzle.isGiven[row][col] || cells[row][col].status == CellStatus.HINTED) {
+            JOptionPane.showMessageDialog(null, "Hint cannot be applied to this cell!");
+            return false; // Hint cannot be applied
+        }
+
+        hintsUsed++;
+
+        // Update cell with hint
+        cells[row][col].status = CellStatus.HINTED;
+        cells[row][col].setText(String.valueOf(puzzle.numbers[row][col])); // Reveal number
+        cells[row][col].setEditable(false);
+        cells[row][col].setBackground(Color.YELLOW);
+
+        return true;
     }
 
 }
