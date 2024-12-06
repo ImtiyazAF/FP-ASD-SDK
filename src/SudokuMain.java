@@ -10,10 +10,13 @@ import javax.swing.*;
 public class SudokuMain extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
     public static JMenuBar menuB;
-    public static JMenu menu;
-    public static JMenuItem m1, m2, m3;
+    public static JMenu option;
+    public static JMenuItem offSound, newGame, resetGame, exit;
     private CardLayout page;
-    private JButton start, btnNewGame, btnHint;
+    private JButton start, btnHint;
+
+    private JTextField nama;
+    JComboBox diff;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -48,56 +51,99 @@ public class SudokuMain extends JFrame {
 
     JPanel MainMenu() {
         JPanel panel = new JPanel(new BorderLayout());
+        JPanel panelAtas = new JPanel();
+        panelAtas.setLayout(new BoxLayout(panelAtas, BoxLayout.Y_AXIS));
+        JPanel panelDalam = new JPanel();
+        panelDalam.setLayout(new BoxLayout(panelDalam, BoxLayout.Y_AXIS));
+
+        String[] difficulty = {"Easy","Medium","Hard"};
+        diff = new JComboBox(difficulty);
+        diff.setMaximumSize(new Dimension(200, diff.getPreferredSize().height));
+
+        nama = new JTextField();
+        nama.setMaximumSize(new Dimension(200, nama.getPreferredSize().height));
+
+
+        ImageIcon icon1 = new ImageIcon(new ImageIcon("logo.png").getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH));
+
         start = new JButton("Start");
+        JLabel l1 = new JLabel("Enter Player Name");
+        JLabel l2 = new JLabel("Pick Difficulty");
+        JLabel iconLabel = new JLabel(icon1);
+
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        l1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        l2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        start.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         start.addActionListener(listener);
-        panel.add(start, BorderLayout.SOUTH);
+
+        panelAtas.add(iconLabel);
+        panelDalam.add(l1);
+        panelDalam.add(nama);
+        panelDalam.add(l2);
+        panelDalam.add(diff);
+        panelDalam.add(Box.createVerticalStrut(50));
+        panelDalam.add(start);
+
+        panel.add(panelAtas, BorderLayout.NORTH);
+        panel.add(panelDalam, BorderLayout.CENTER);
 
         return panel;
     }
 
     JPanel GameMenu() {
         JPanel panel = new JPanel(new BorderLayout());
-        board = new GameBoardPanel();
-
-        menuB = new JMenuBar();
-        // create a menu
-        menu = new JMenu("Menu");
-        JMenu file = new JMenu("File");
-        // create menuitems
-        m1 = new JMenuItem("MenuItem1");
-        m2 = new JMenuItem("MenuItem2");
-        m3 = new JMenuItem("MenuItem3");
-
-        // add menu items to menu
-        menu.add(m1);
-        menu.add(m2);
-        menu.add(m3);
-        // add menu to menu bar
-        menuB.add(menu);
-        menuB.add(file);
-
         JPanel menubar = new JPanel(new GridLayout());
         JPanel gameboard = new JPanel();
+        JPanel playerBar = new JPanel(new GridLayout(4,1));
+        JPanel foot = new JPanel();
+
+        JLabel l1 = new JLabel("Player Name");
+        JLabel l2 = new JLabel("Score");
+        JLabel l3 = new JLabel("Progres Bar");
+        JLabel l4 = new JLabel("Timer");
+
+        l1.setHorizontalAlignment(SwingConstants.CENTER);
+        l2.setHorizontalAlignment(SwingConstants.CENTER);
+        l3.setHorizontalAlignment(SwingConstants.CENTER);
+        l4.setHorizontalAlignment(SwingConstants.CENTER);
+
+        board = new GameBoardPanel();
+        menuB = new JMenuBar();
+        option = new JMenu("Options");
+        resetGame = new JMenuItem("Reset Game");
+        newGame = new JMenuItem("New Game");
+        exit = new JMenuItem("Exit");
+        offSound = new JMenuItem("Turn Sound Off");
+        btnHint = new JButton("Get Hint");
+
+        option.add(offSound);
+        option.add(newGame);
+        option.add(resetGame);
+        option.add(exit);
+        menuB.add(option);
+
+        btnHint.addActionListener(listener);
+        newGame.addActionListener(listener);
+        resetGame.addActionListener(listener);
+        exit.addActionListener(listener);
 
         menubar.add(menuB);
-
-        JPanel controlPanel = new JPanel();
-        btnNewGame = new JButton("New Game");
-        btnHint = new JButton("Get Hint");
-        controlPanel.add(btnHint);
-        controlPanel.add(btnNewGame);
-        btnHint.addActionListener(listener);
-        btnNewGame.addActionListener(listener);
+        foot.add(btnHint);
+        playerBar.add(l1);
+        playerBar.add(l2);
+        playerBar.add(l3);
+        playerBar.add(l4);
 
         panel.add(menubar, BorderLayout.NORTH);
         panel.add(board, BorderLayout.CENTER);
-        panel.add(controlPanel, BorderLayout.SOUTH);
+        panel.add(playerBar, BorderLayout.WEST);
+        panel.add(foot, BorderLayout.SOUTH);
 
-        board.newGame();
+
 
         return panel;
-
-
     }
 
     private class CellInputListener implements ActionListener {
@@ -105,7 +151,7 @@ public class SudokuMain extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == start) {
                 page.show(mainmenu, "gameMenu");
-
+                board.newGame(diff.getSelectedIndex());
             }
             if (e.getSource() == btnHint) {
                 String input = JOptionPane.showInputDialog("Enter cell (row,col) for hint (1-9,1-9):");
@@ -120,8 +166,16 @@ public class SudokuMain extends JFrame {
                 }
             }
 
-            if(e.getSource()== btnNewGame){
-                board.newGame();
+            if(e.getSource()== newGame){
+                page.show(mainmenu, "mainMenu");
+            }
+
+            if(e.getSource()== resetGame){
+                board.resetGameBoard();
+            }
+
+            if(e.getSource()==exit){
+                System.exit(0);
             }
         }
     }
