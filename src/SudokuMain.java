@@ -13,6 +13,8 @@ public class SudokuMain extends JFrame {
     public static JMenuItem m1, m2, m3;
     private CardLayout page;
     private JButton start, btnNewGame, btnHint;
+    private JProgressBar progressBar;
+    private Timer gameTimer;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -92,12 +94,26 @@ public class SudokuMain extends JFrame {
         panel.add(board, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
 
+        JPanel infoPanel = new JPanel(new GridLayout(1, 2));
+        JLabel timerLabel = new JLabel("Time: 0 sec");
+        JLabel scoreLabel = new JLabel("Score: 100");
+        infoPanel.add(timerLabel);
+        infoPanel.add(scoreLabel);
 
+        progressBar = new JProgressBar();
+        infoPanel.add(progressBar);
+
+        panel.add(infoPanel, BorderLayout.NORTH);
+        panel.add(board, BorderLayout.CENTER);
+
+        Timer uiTimer = new Timer(1000, e -> {
+            timerLabel.setText("Time: " + board.getElapsedTime() + " sec");
+            scoreLabel.setText("Score: " + board.getScore());
+        });
+        uiTimer.start();
         board.newGame();
 
         return panel;
-
-
     }
 
     private class CellInputListener implements ActionListener {
@@ -125,8 +141,12 @@ public class SudokuMain extends JFrame {
             if(e.getSource()== btnNewGame){
                 board.newGame();
             }
+
         }
     }
+
+
+
 
 
     /** The entry main() entry method */

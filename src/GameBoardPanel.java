@@ -2,24 +2,37 @@ package sudoku;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
-    private int hintsUsed = 0;  // Jumlah hint yang telah digunakan
-    private static final int MAX_HINTS = 3;  // Batas maksimum hint
+    private int hintsUsed = 0;
+    private static final int MAX_HINTS = 3;
 
     // Define named constants for UI sizes
     public static final int CELL_SIZE = 60;   // Cell width/height in pixels
-    public static final int BOARD_WIDTH  = CELL_SIZE * SudokuConstants.GRID_SIZE;
+    public static final int BOARD_WIDTH = CELL_SIZE * SudokuConstants.GRID_SIZE;
     public static final int BOARD_HEIGHT = CELL_SIZE * SudokuConstants.GRID_SIZE;
     // Board width/height in pixels
     // Define properties
-    /** The game board composes of 9x9 Cells (customized JTextFields) */
+    /**
+     * The game board composes of 9x9 Cells (customized JTextFields)
+     */
     private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
-    /** It also contains a Puzzle with array numbers and isGiven */
+    /**
+     * It also contains a Puzzle with array numbers and isGiven
+     */
     private Puzzle puzzle = new Puzzle();
 
-    /** Constructor */
+    private Timer gameTimer;
+    private int elapsedTime = 0;
+    private int score = 100;
+    private int mistakes = 0;
+    private JProgressBar progressBar;
+
+    /**
+     * Constructor
+     */
     public GameBoardPanel() {
         super.setLayout(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));// JPanel
 
@@ -30,6 +43,11 @@ public class GameBoardPanel extends JPanel {
                 super.add(cells[row][col]);   // JPanel
             }
         }
+
+
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        this.add(progressBar, BorderLayout.SOUTH);
 
 
         // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
@@ -47,6 +65,35 @@ public class GameBoardPanel extends JPanel {
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
     }
 
+    public int getElapsedTime() {
+        return elapsedTime;
+    }
+
+
+    public void startTimer() {
+        gameTimer = new Timer(1000, e -> {
+            elapsedTime++;
+        });
+        gameTimer.start();
+    }
+
+    public void stopTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+
+    }
+
+    public void setProgressBarAndTimer() {
+        // Inisialisasi JProgressBar
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        add(progressBar, BorderLayout.SOUTH);
+
+        // Inisialisasi Timer
+        gameTimer = new Timer(1000, e -> updateTimer());
+    }
+
     /**
      * Generate a new puzzle; and reset the game board of cells based on the puzzle.
      * You can call this method to start a new game.
@@ -61,22 +108,114 @@ public class GameBoardPanel extends JPanel {
                 cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
             }
         }
+
+        elapsedTime = 0;
+        mistakes = 0;
+        score = 100;
+
+        setProgressBarAndTimer();
+
+        // Mulai Timer
+        gameTimer.start();
+
+        // Perbarui progress
+        progressBar.setValue(getProgress());
     }
 
-    /**
-     * Return true if the puzzle is solved
-     * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS
-     */
-    public boolean isSolved() {
+
+    public int getProgress() {
+        int filledCells = 0;
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                if (cells[row][col].status == CellStatus.TO_GUESS || cells[row][col].status == CellStatus.WRONG_GUESS) {
-                    return false;
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                    filledCells++;
+
                 }
             }
         }
-        return true;
+
+        return (int) ((filledCells / 81.0) * 100);
     }
+
+    private void updateScore() {
+        int timePenalty = 0;
+        if (score < 0) score = 0;
+
+        if (elapsedTime <= 30) timePenalty = 0;
+        else if (elapsedTime <= 60) timePenalty = 5;
+        else if (elapsedTime <= 90) timePenalty = 10;
+        else if (elapsedTime <= 120) timePenalty = 15;
+        else if (elapsedTime <= 300) timePenalty = 20 + (elapsedTime - 120) / 30 * 5;
+        else timePenalty = 60;
+
+        score = 100 - timePenalty - (mistakes * 2);
+        score = Math.max(score, 40); // Minimal skor adalah 40
+    }
+
+
+
+
+    public int getScore() {
+        return score;
+    }
+
+    public void calculateScore() {
+        if (elapsedTime < 30) {
+            score = 100;
+        } else if (elapsedTime < 60) {
+            score = 95;
+        } else if (elapsedTime < 90) {
+            score = 90;
+        } else if (elapsedTime < 120) {
+            score = 85;
+        } else if (elapsedTime < 150) {
+            score = 80;
+        } else if (elapsedTime < 180) {
+            score = 75;
+        } else if (elapsedTime < 200) {
+            score = 70;
+        } else if (elapsedTime < 300) {
+            score = 55 + (250 - elapsedTime) / 50 * 5;
+        } else {
+            score = 40;
+        }
+    }
+
+    public void deductPointsForWrongGuess() {
+        score -= 2;
+        if (score < 0) score = 0;
+    }
+
+
+    public void updateTimer() {
+        elapsedTime++;
+        calculateScore();
+        repaint();
+        updateScore();
+        progressBar.setValue(getProgress());
+
+
+        if (progressBar != null) {
+            progressBar.setValue(getProgress());
+        }
+    }
+
+
+        /**
+         * Return true if the puzzle is solved
+         * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS
+         */
+        public boolean isSolved () {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                    if (cells[row][col].status == CellStatus.TO_GUESS || cells[row][col].status == CellStatus.WRONG_GUESS) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
 
     // [TODO 2] Define a Listener Inner Class for all the editable Cells
     private class CellInputListener implements ActionListener {
@@ -110,7 +249,25 @@ public class GameBoardPanel extends JPanel {
              */
             boolean win = isSolved();
             if (win == true) JOptionPane.showMessageDialog(null, "Congratulation!");
+            gameTimer.stop(); // Hentikan timer
         }
+    }
+
+
+    private void updateProgress(int value) {
+        int progress = getProgress();
+        progressBar.setValue(value);
+        progressBar.repaint();
+        int correctCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                    correctCells++;
+                }
+            }
+        }
+
+        progressBar.setValue(progress);
     }
 
     //HINTS
