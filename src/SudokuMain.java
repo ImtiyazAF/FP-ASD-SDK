@@ -9,10 +9,10 @@ import javax.swing.*;
 public class SudokuMain extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
     public static JMenuBar menuB;
-    public static JMenu menu;
-    public static JMenuItem m1, m2, m3;
+    public static JMenu option;
+    public static JMenuItem offSound, newGame, resetGame, exit;
     private CardLayout page;
-    private JButton start, btnNewGame, btnHint;
+    private JButton start, btnHint;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -56,48 +56,44 @@ public class SudokuMain extends JFrame {
 
     JPanel GameMenu() {
         JPanel panel = new JPanel(new BorderLayout());
+        JPanel menubar = new JPanel(new GridLayout());
+        JPanel gameboard = new JPanel();
+        JPanel controlPanel = new JPanel();
         board = new GameBoardPanel();
 
         menuB = new JMenuBar();
-        // create a menu
-        menu = new JMenu("Menu");
-        JMenu file = new JMenu("File");
-        // create menuitems
-        m1 = new JMenuItem("MenuItem1");
-        m2 = new JMenuItem("MenuItem2");
-        m3 = new JMenuItem("MenuItem3");
+
+        option = new JMenu("Options");
+
+        resetGame = new JMenuItem("Reset Game");
+        newGame = new JMenuItem("New Game");
+        exit = new JMenuItem("Exit");
+        offSound = new JMenuItem("Turn Sound Off");
+
+        btnHint = new JButton("Get Hint");
 
         // add menu items to menu
-        menu.add(m1);
-        menu.add(m2);
-        menu.add(m3);
-        // add menu to menu bar
-        menuB.add(menu);
-        menuB.add(file);
+        option.add(offSound);
+        option.add(newGame);
+        option.add(resetGame);
+        option.add(exit);
+        menuB.add(option);
 
-        JPanel menubar = new JPanel(new GridLayout());
-        JPanel gameboard = new JPanel();
+        btnHint.addActionListener(listener);
+        newGame.addActionListener(listener);
+        resetGame.addActionListener(listener);
+        exit.addActionListener(listener);
 
         menubar.add(menuB);
-
-        JPanel controlPanel = new JPanel();
-        btnNewGame = new JButton("New Game");
-        btnHint = new JButton("Get Hint");
         controlPanel.add(btnHint);
-        controlPanel.add(btnNewGame);
-        btnHint.addActionListener(listener);
-        btnNewGame.addActionListener(listener);
 
         panel.add(menubar, BorderLayout.NORTH);
         panel.add(board, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
 
-
         board.newGame();
 
         return panel;
-
-
     }
 
     private class CellInputListener implements ActionListener {
@@ -120,8 +116,12 @@ public class SudokuMain extends JFrame {
                 }
             }
 
-            if(e.getSource()== btnNewGame){
+            if(e.getSource()== resetGame){
                 board.newGame();
+            }
+
+            if(e.getSource()==exit){
+                System.exit(0);
             }
         }
     }
