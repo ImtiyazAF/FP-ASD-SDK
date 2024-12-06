@@ -6,6 +6,7 @@ import javax.swing.*;
 /**
  * The main Sudoku program
  */
+
 public class SudokuMain extends JFrame {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
     public static JMenuBar menuB;

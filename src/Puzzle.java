@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * The Sudoku number puzzle to be solved
  */
+
 public class Puzzle {
     // All variables have package access
     // The numbers on the puzzle

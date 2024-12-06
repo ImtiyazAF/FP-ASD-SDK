@@ -7,6 +7,7 @@ import javax.swing.JTextField;
  * The Cell class model the cells of the Sudoku puzzle, by customizing (subclass)
  * the javax.swing.JTextField to include row/column, puzzle number and status.
  */
+
 public class Cell extends JTextField {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
 
