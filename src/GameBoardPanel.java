@@ -68,7 +68,9 @@ public class GameBoardPanel extends JPanel {
         // Initialize all the 9x9 cells, based on the puzzle.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
+                cells[row][col].newGame(puzzle.numbers[row][col],puzzle.isGiven[row][col]);
+                cells[row][col].status = puzzle.isGiven[row][col] ? CellStatus.CORRECT_GUESS : CellStatus.TO_GUESS;
+
             }
         }
 
@@ -119,12 +121,16 @@ public class GameBoardPanel extends JPanel {
         }
 
         private void handleTextChange() {
+            if (sourceCell.status != CellStatus.TO_GUESS || sourceCell.status != CellStatus.WRONG_GUESS) {
+                return; // Ignore changes in cells that are not TO_GUESS
+            }
             // Retrieve the current text from the Cell (inherited from JTextField)
             String inputText = sourceCell.getText();
 
             try {
                 // Parse the input text as an integer
-                int numberIn = Integer.parseInt(inputText);
+                int numberIn = Integer.parseInt(inputText.trim());
+
 
                 // For debugging or further processing
                 System.out.println("You entered " + numberIn);
@@ -142,17 +148,15 @@ public class GameBoardPanel extends JPanel {
                 }
                 sourceCell.paint();   // re-paint this cell based on its status
 
-                if (isColumnCorrect(sourceCell.col)) {
-                    boolean win = isSolved();
-                    if (win) {
-                        JOptionPane.showMessageDialog(null, "Congratulations! You solved the puzzle!");
-                    }
-                }
                 /*
                  * [TODO 6] (later)
                  * Check if the player has solved the puzzle after this move,
                  *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
                  */
+
+                if (isSolved()) {
+                    JOptionPane.showMessageDialog(null, "Congratulations!");
+                }
 
             } catch (NumberFormatException e) {
                 // Handle invalid input (e.g., non-integer values)
