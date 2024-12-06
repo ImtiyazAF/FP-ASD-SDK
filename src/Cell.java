@@ -18,6 +18,7 @@ public class Cell extends JTextField {
     public static final Color BG_TO_GUESS  = Color.YELLOW;
     public static final Color BG_CORRECT_GUESS = new Color(0, 216, 0);
     public static final Color BG_WRONG_GUESS   = new Color(216, 0, 0);
+    public static final Color BG_HINTED   = new Color(173, 216, 230);
     public static final Font FONT_NUMBERS = new Font("OCR A Extended", Font.PLAIN, 28);
 
     // Define properties (package-visible)
@@ -63,6 +64,8 @@ public class Cell extends JTextField {
             super.setBackground(BG_CORRECT_GUESS);
         } else if (status == CellStatus.WRONG_GUESS) {    // from TO_GUESS
             super.setBackground(BG_WRONG_GUESS);
+        } else if (status == CellStatus.HINTED) {
+            super.setBackground(BG_HINTED);
         }
     }
 }

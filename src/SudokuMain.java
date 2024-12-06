@@ -114,6 +114,8 @@ public class SudokuMain extends JFrame {
                     int row = Integer.parseInt(parts[0]) - 1;
                     int col = Integer.parseInt(parts[1]) - 1;
 
+
+
                     if (!board.provideHint(row, col)) {
                         JOptionPane.showMessageDialog(SudokuMain.this, "Hint could not be applied!");
                     }

@@ -137,6 +137,7 @@ public class GameBoardPanel extends JPanel {
         cells[row][col].setText(String.valueOf(puzzle.numbers[row][col])); // Reveal number
         cells[row][col].setEditable(false);
         cells[row][col].setBackground(Color.YELLOW);
+        cells[row][col].paint();
 
         return true;
     }
