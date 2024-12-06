@@ -11,7 +11,6 @@ public class GameBoardPanel extends JPanel {
     public static final int BOARD_WIDTH  = CELL_SIZE * SudokuConstants.GRID_SIZE;
     public static final int BOARD_HEIGHT = CELL_SIZE * SudokuConstants.GRID_SIZE;
     // Board width/height in pixels
-
     // Define properties
     /** The game board composes of 9x9 Cells (customized JTextFields) */
     private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
@@ -20,7 +19,7 @@ public class GameBoardPanel extends JPanel {
 
     /** Constructor */
     public GameBoardPanel() {
-        super.setLayout(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));  // JPanel
+        super.setLayout(new GridLayout(SudokuConstants.GRID_SIZE, SudokuConstants.GRID_SIZE));// JPanel
 
         // Allocate the 2D array of Cell, and added into JPanel.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
@@ -30,17 +29,18 @@ public class GameBoardPanel extends JPanel {
             }
         }
 
+
         // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
-            CellInputListener listener = new CellInputListener();
+        CellInputListener listener = new CellInputListener();
 
         // [TODO 4] Adds this common listener to all editable cells
-            for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
-                for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                    if (cells[row][col].isEditable()) {
-                        cells[row][col].addActionListener(listener);   // For all editable rows and cols
-                    }
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].isEditable()) {
+                    cells[row][col].addActionListener(listener);   // For all editable rows and cols
                 }
             }
+        }
 
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
     }
