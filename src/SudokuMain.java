@@ -48,7 +48,9 @@ public class SudokuMain extends JFrame {
     JPanel MainMenu() {
         JPanel panel = new JPanel(new BorderLayout());
         start = new JButton("Start");
+
         start.addActionListener(listener);
+
         panel.add(start, BorderLayout.SOUTH);
 
         return panel;
@@ -58,21 +60,28 @@ public class SudokuMain extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         JPanel menubar = new JPanel(new GridLayout());
         JPanel gameboard = new JPanel();
-        JPanel controlPanel = new JPanel();
+        JPanel playerBar = new JPanel(new GridLayout(4,1));
+        JPanel foot = new JPanel();
+
+        JLabel l1 = new JLabel("Player Name");
+        JLabel l2 = new JLabel("Score");
+        JLabel l3 = new JLabel("Progres Bar");
+        JLabel l4 = new JLabel("Timer");
+
+        l1.setHorizontalAlignment(SwingConstants.CENTER);
+        l2.setHorizontalAlignment(SwingConstants.CENTER);
+        l3.setHorizontalAlignment(SwingConstants.CENTER);
+        l4.setHorizontalAlignment(SwingConstants.CENTER);
+
         board = new GameBoardPanel();
-
         menuB = new JMenuBar();
-
         option = new JMenu("Options");
-
         resetGame = new JMenuItem("Reset Game");
         newGame = new JMenuItem("New Game");
         exit = new JMenuItem("Exit");
         offSound = new JMenuItem("Turn Sound Off");
-
         btnHint = new JButton("Get Hint");
 
-        // add menu items to menu
         option.add(offSound);
         option.add(newGame);
         option.add(resetGame);
@@ -85,11 +94,16 @@ public class SudokuMain extends JFrame {
         exit.addActionListener(listener);
 
         menubar.add(menuB);
-        controlPanel.add(btnHint);
+        foot.add(btnHint);
+        playerBar.add(l1);
+        playerBar.add(l2);
+        playerBar.add(l3);
+        playerBar.add(l4);
 
         panel.add(menubar, BorderLayout.NORTH);
         panel.add(board, BorderLayout.CENTER);
-        panel.add(controlPanel, BorderLayout.SOUTH);
+        panel.add(playerBar, BorderLayout.WEST);
+        panel.add(foot, BorderLayout.SOUTH);
 
         board.newGame();
 
