@@ -15,7 +15,7 @@ public class SudokuMain extends JFrame {
     private JButton start, btnHint;
 
     private JTextField nama;
-    private JComboBox diff;
+    JComboBox diff;
 
     private GameBoardPanel board;
     Container cp = getContentPane();
@@ -133,7 +133,7 @@ public class SudokuMain extends JFrame {
         panel.add(playerBar, BorderLayout.WEST);
         panel.add(foot, BorderLayout.SOUTH);
 
-        board.newGame();
+
 
         return panel;
     }
@@ -143,7 +143,7 @@ public class SudokuMain extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == start) {
                 page.show(mainmenu, "gameMenu");
-
+                board.newGame(diff.getSelectedIndex());
             }
             if (e.getSource() == btnHint) {
                 String input = JOptionPane.showInputDialog("Enter cell (row,col) for hint (1-9,1-9):");
@@ -159,7 +159,7 @@ public class SudokuMain extends JFrame {
             }
 
             if(e.getSource()== newGame){
-                board.newGame();
+                page.show(mainmenu, "mainMenu");
             }
 
             if(e.getSource()==exit){

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
     private int hintsUsed = 0;  // Jumlah hint yang telah digunakan
@@ -51,9 +52,15 @@ public class GameBoardPanel extends JPanel {
      * Generate a new puzzle; and reset the game board of cells based on the puzzle.
      * You can call this method to start a new game.
      */
-    public void newGame() {
+    public void newGame(int diffInt) {
         // Generate a new puzzle
-        puzzle.newPuzzle(10);  // 2 can be changed to control the difficulty level
+        if(diffInt == 0){
+            puzzle.newPuzzle(5);
+        } else if (diffInt == 1){
+            puzzle.newPuzzle(10);
+        } else{
+            puzzle.newPuzzle(15);
+        }
 
         // Initialize all the 9x9 cells, based on the puzzle.
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
