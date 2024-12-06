@@ -7,6 +7,15 @@ public class GameBoardPanel extends JPanel {
     private static final long serialVersionUID = 1L;  // to prevent serial warning
     private int hintsUsed = 0;  // Jumlah hint yang telah digunakan
     private static final int MAX_HINTS = 3;  // Batas maksimum hint
+    private int elapsedTime = 0;
+    private int score = 100;
+
+    private Timer gameTimer;
+    private JProgressBar progressBar;
+    private JLabel timerLabel;
+    private JLabel scoreLabel;
+
+    private JPanel boardPanel;
 
     // Define named constants for UI sizes
     public static final int CELL_SIZE = 60;   // Cell width/height in pixels
@@ -45,6 +54,20 @@ public class GameBoardPanel extends JPanel {
         }
 
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
+
+        JPanel infoPanel = new JPanel(new FlowLayout());
+        timerLabel = new JLabel("Time: 0 sec");
+        scoreLabel = new JLabel("Score: 100");
+        progressBar = new JProgressBar();
+
+        infoPanel.add(timerLabel);
+        infoPanel.add(scoreLabel);
+        infoPanel.add(progressBar);
+
+        super.add(infoPanel, BorderLayout.NORTH);
+        super.add(boardPanel, BorderLayout.CENTER);
+
+        startGameTimer();
     }
 
     /**
@@ -61,6 +84,10 @@ public class GameBoardPanel extends JPanel {
                 cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
             }
         }
+
+        elapsedTime = 0;
+        score = 100;
+        updateUIComponents();
     }
 
     /**
@@ -139,6 +166,52 @@ public class GameBoardPanel extends JPanel {
         cells[row][col].setBackground(Color.YELLOW);
 
         return true;
+    }
+
+    private void updateUIComponents() {
+        progressBar.setValue(getProgress());
+        scoreLabel.setText("Score: " + score);
+    }
+
+    private int getProgress() {
+        int filledCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.CORRECT_GUESS) {
+                    filledCells++;
+                }
+            }
+        }
+        return (filledCells * 100) / (SudokuConstants.GRID_SIZE * SudokuConstants.GRID_SIZE);
+    }
+
+    public void calculateScore(boolean correctGuess) {
+        if (elapsedTime < 30) {
+            score = 100;
+        } else if (elapsedTime < 60) {
+            score = 95;
+        } else if (elapsedTime < 90) {
+            score = 90;
+        } else if (elapsedTime < 120) {
+            score = 85;
+        } else if (elapsedTime < 300) {
+            score = 55 + (5 * (5 - (elapsedTime / 60)));
+        } else {
+            score = 40;
+        }
+
+        if (!correctGuess) {
+            score -= 2.5;
+        }
+        updateUIComponents();
+    }
+
+    private void startGameTimer() {
+        gameTimer = new Timer(1000, e -> {
+            elapsedTime++;
+            timerLabel.setText("Time: " + elapsedTime + " sec");
+        });
+        gameTimer.start();  // Mulai timer
     }
 
 }

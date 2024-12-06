@@ -92,7 +92,6 @@ public class SudokuMain extends JFrame {
         panel.add(board, BorderLayout.CENTER);
         panel.add(controlPanel, BorderLayout.SOUTH);
 
-
         board.newGame();
 
         return panel;
