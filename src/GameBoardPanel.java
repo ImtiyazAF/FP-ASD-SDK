@@ -2,6 +2,8 @@ package sudoku;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class GameBoardPanel extends JPanel {
@@ -34,13 +36,14 @@ public class GameBoardPanel extends JPanel {
 
 
         // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
-        CellInputListener listener = new CellInputListener();
+
+        //DocumentListener listener = new DocumentListener();
 
         // [TODO 4] Adds this common listener to all editable cells
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
                 if (cells[row][col].isEditable()) {
-                    cells[row][col].addActionListener(listener);   // For all editable rows and cols
+                    cells[row][col].getDocument().addDocumentListener(new CellInputListener(cells[row][col]));   // For all editable rows and cols
                 }
             }
         }
@@ -68,6 +71,7 @@ public class GameBoardPanel extends JPanel {
                 cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
             }
         }
+
     }
 
 
@@ -87,39 +91,78 @@ public class GameBoardPanel extends JPanel {
     }
 
     // [TODO 2] Define a Listener Inner Class for all the editable Cells
-    private class CellInputListener implements ActionListener {
+    private class CellInputListener implements DocumentListener {
+        private Cell sourceCell;
+
+        public CellInputListener(Cell sourceCell) {
+            this.sourceCell = sourceCell;
+        }
+
         @Override
-        public void actionPerformed(ActionEvent e) {
-            // Get a reference of the JTextField that triggers this action event
-            Cell sourceCell = (Cell)e.getSource();
+        public void insertUpdate(DocumentEvent e) {
 
-            // Retrieve the int entered
-            int numberIn = Integer.parseInt(sourceCell.getText());
-            // For debugging
-            System.out.println("You entered " + numberIn);
+            handleTextChange();
+//            boolean win = isSolved();
+//            if (win == true) JOptionPane.showMessageDialog(null, "Congratulation!");
+        }
 
-            /*
-             * [TODO 5] (later - after TODO 3 and 4)
-             * Check the numberIn against sourceCell.number.
-             * Update the cell status sourceCell.status,
-             * and re-paint the cell via sourceCell.paint().
-             */
-            if (numberIn == sourceCell.number) {
-               sourceCell.status = CellStatus.CORRECT_GUESS;
-            } else {
-               sourceCell.status = CellStatus.WRONG_GUESS;
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+
+            handleTextChange();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+
+            handleTextChange();
+        }
+
+        private void handleTextChange() {
+            // Retrieve the current text from the Cell (inherited from JTextField)
+            String inputText = sourceCell.getText();
+
+            try {
+                // Parse the input text as an integer
+                int numberIn = Integer.parseInt(inputText);
+
+                // For debugging or further processing
+                System.out.println("You entered " + numberIn);
+
+                /*
+                 * [TODO 5] (later - after TODO 3 and 4)
+                 * Check the numberIn against sourceCell.number.
+                 * Update the cell status sourceCell.status,
+                 * and re-paint the cell via sourceCell.paint().
+                 */
+                if (numberIn == sourceCell.number) {
+                    sourceCell.status = CellStatus.CORRECT_GUESS;
+                } else {
+                    sourceCell.status = CellStatus.WRONG_GUESS;
+                }
+                sourceCell.paint();   // re-paint this cell based on its status
+
+                if (isColumnCorrect(sourceCell.col)) {
+                    boolean win = isSolved();
+                    if (win) {
+                        JOptionPane.showMessageDialog(null, "Congratulations! You solved the puzzle!");
+                    }
+                }
+                /*
+                 * [TODO 6] (later)
+                 * Check if the player has solved the puzzle after this move,
+                 *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
+                 */
+
+            } catch (NumberFormatException e) {
+                // Handle invalid input (e.g., non-integer values)
+                System.out.println("Invalid input: " + inputText);
             }
-            sourceCell.paint();   // re-paint this cell based on its status
 
-            /*
-             * [TODO 6] (later)
-             * Check if the player has solved the puzzle after this move,
-             *   by calling isSolved(). Put up a congratulation JOptionPane, if so.
-             */
-            boolean win = isSolved();
-            if (win == true) JOptionPane.showMessageDialog(null, "Congratulation!");
+
         }
     }
+
 
     //HINTS
     public boolean provideHint(int row, int col) {
@@ -146,6 +189,14 @@ public class GameBoardPanel extends JPanel {
         cells[row][col].setEditable(false);
         cells[row][col].setBackground(Color.YELLOW);
 
+        return true;
+    }
+    private boolean isColumnCorrect(int col) {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; row++) {
+            if (cells[row][col].status != CellStatus.CORRECT_GUESS) {
+                return false;
+            }
+        }
         return true;
     }
 

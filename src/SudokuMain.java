@@ -50,36 +50,43 @@ public class SudokuMain extends JFrame {
 
     JPanel MainMenu() {
         JPanel panel = new JPanel(new BorderLayout());
-        //JPanel panelAtas = new JPanel();
+        JPanel panelAtas = new JPanel();
+        panelAtas.setLayout(new BoxLayout(panelAtas, BoxLayout.Y_AXIS));
         JPanel panelDalam = new JPanel();
         panelDalam.setLayout(new BoxLayout(panelDalam, BoxLayout.Y_AXIS));
 
         String[] difficulty = {"Easy","Medium","Hard"};
         diff = new JComboBox(difficulty);
+        diff.setMaximumSize(new Dimension(200, diff.getPreferredSize().height));
 
         nama = new JTextField();
+        nama.setMaximumSize(new Dimension(200, nama.getPreferredSize().height));
 
-        //ImageIcon icon1 = new ImageIcon(new ImageIcon("logo.png").getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+
+        ImageIcon icon1 = new ImageIcon(new ImageIcon("logo.png").getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH));
 
         start = new JButton("Start");
         JLabel l1 = new JLabel("Enter Player Name");
         JLabel l2 = new JLabel("Pick Difficulty");
-        //JLabel icon = new JLabel(icon1);
+        JLabel iconLabel = new JLabel(icon1);
 
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         l1.setAlignmentX(Component.CENTER_ALIGNMENT);
         l2.setAlignmentX(Component.CENTER_ALIGNMENT);
         start.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         start.addActionListener(listener);
 
-        //panelAtas.add(icon);
+        panelAtas.add(iconLabel);
         panelDalam.add(l1);
         panelDalam.add(nama);
         panelDalam.add(l2);
         panelDalam.add(diff);
+        panelDalam.add(Box.createVerticalStrut(50));
         panelDalam.add(start);
+
+        panel.add(panelAtas, BorderLayout.NORTH);
         panel.add(panelDalam, BorderLayout.CENTER);
-        //panel.add(panelAtas, BorderLayout.NORTH);
 
         return panel;
     }
